@@ -52,10 +52,16 @@ class _MapScreenState extends State<MapScreen> {
                 return SingleChildScrollView(
                   child: Stack(
                     children: [
+
                       MapView(
                         initialLocation: locationState.lastknownLocation!,
                         polylines: polylines.values.toSet()
-                      )
+                      ),
+
+                      const SearchBar(),
+
+                      const ManualMarker()
+
                     ],
                   ),
                 );
