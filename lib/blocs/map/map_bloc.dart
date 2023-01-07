@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:maps_app/blocs/blocs.dart';
+import 'package:maps_app/helpers/helpers.dart';
 import 'package:maps_app/models/models.dart';
 import 'package:maps_app/themes/themes.dart';
 
@@ -29,7 +30,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<OnStopFollowingUser>((event, emit) => emit( state.copyWith(isFollowingUser: false) ));
     on<UpdateUserPolylines>( _onPolylineNewPoint );
     on<OnToggleUserRoute>((event, emit) => emit( state.copyWith(showMyRoute: !state.showMyRoute) ));
-    on<DisplayPolylinesEvent>((event, emit) => emit( state.copyWith(polylines: event.polylines) ));
+    
+    on<DisplayPolylinesEvent>((event, emit) => emit( state.copyWith(
+      polylines: event.polylines, 
+      markers: event.markers
+    ) ));
 
     locationStateSubcription = locationBloc.stream.listen((locationState) {
 
@@ -89,7 +94,44 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final currentPolylines = Map<String, Polyline>.from(state.polylines);
     currentPolylines['route'] = myRoute;
 
-    add( DisplayPolylinesEvent(currentPolylines) );
+    double kms = destination.distance / 1000;
+    kms = (kms * 100).floorToDouble();
+    kms /= 100;
+
+    double tripDuration = (destination.duration / 60).floorToDouble();
+
+    final startMarkerIcon = await getAssetImageMarker();
+
+    final startMarker = Marker(
+      markerId: const MarkerId('start'),
+      position: destination.points.first,
+      icon: startMarkerIcon,
+      infoWindow: InfoWindow(
+        title: 'Inicio',
+        snippet: 'Kms: $kms Distancia: $tripDuration'
+      )
+    );
+
+    final endMarkerIcon = await getNetworkImageMarker();
+
+    final endMarker = Marker(
+      markerId: const MarkerId('end'),
+      position: destination.points.last,
+      icon: endMarkerIcon,
+      infoWindow: InfoWindow(
+        title: destination.endPlace.text,
+        snippet: destination.endPlace.placeName
+      )
+    );
+
+    final currentMarkers = Map<String, Marker>.from(state.markers);
+    currentMarkers['start'] = startMarker;
+    currentMarkers['end'] = endMarker;
+
+    add( DisplayPolylinesEvent(currentPolylines, currentMarkers) );
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    _mapController?.showMarkerInfoWindow(const MarkerId('start'));
 
   } 
 
