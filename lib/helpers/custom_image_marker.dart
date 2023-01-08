@@ -21,7 +21,7 @@ Future<BitmapDescriptor> getNetworkImageMarker() async {
 
   final imageCodec = await ui.instantiateImageCodec(resp.data, targetHeight: 150, targetWidth: 150);
   final frame = await imageCodec.getNextFrame();
-  final data = frame.image.toByteData(format: ui.ImageByteFormat.png);
+  final data = await frame.image.toByteData(format: ui.ImageByteFormat.png);
 
   if(data == null) {
     return await getAssetImageMarker();

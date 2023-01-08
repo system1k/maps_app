@@ -98,30 +98,33 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     kms = (kms * 100).floorToDouble();
     kms /= 100;
 
-    double tripDuration = (destination.duration / 60).floorToDouble();
+    int tripDuration = (destination.duration / 60).floorToDouble().toInt();
 
-    final startMarkerIcon = await getAssetImageMarker();
+    // final startMarkerIcon = await getAssetImageMarker();
+    final startMarkerIcon = await getStartCustomMarker(tripDuration, 'Mi ubicación');
 
     final startMarker = Marker(
       markerId: const MarkerId('start'),
       position: destination.points.first,
       icon: startMarkerIcon,
-      infoWindow: InfoWindow(
-        title: 'Inicio',
-        snippet: 'Kms: $kms Distancia: $tripDuration'
-      )
+      anchor: const Offset(0.1, 1)
+      // infoWindow: InfoWindow(
+      //   title: 'Inicio',
+      //   snippet: 'Kms: $kms Distancia: $tripDuration'
+      // )
     );
 
-    final endMarkerIcon = await getNetworkImageMarker();
+    // final endMarkerIcon = await getNetworkImageMarker();
+    final endMarkerIcon = await getEndCustomMarker(kms, destination.endPlace.text);
 
     final endMarker = Marker(
       markerId: const MarkerId('end'),
       position: destination.points.last,
       icon: endMarkerIcon,
-      infoWindow: InfoWindow(
-        title: destination.endPlace.text,
-        snippet: destination.endPlace.placeName
-      )
+      // infoWindow: InfoWindow(
+      //   title: destination.endPlace.text,
+      //   snippet: destination.endPlace.placeName
+      // )
     );
 
     final currentMarkers = Map<String, Marker>.from(state.markers);
@@ -130,8 +133,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     add( DisplayPolylinesEvent(currentPolylines, currentMarkers) );
 
-    await Future.delayed(const Duration(milliseconds: 300));
-    _mapController?.showMarkerInfoWindow(const MarkerId('start'));
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // _mapController?.showMarkerInfoWindow(const MarkerId('start'));
 
   } 
 
