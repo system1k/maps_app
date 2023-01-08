@@ -98,15 +98,22 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     kms = (kms * 100).floorToDouble();
     kms /= 100;
 
+<<<<<<< HEAD
     int tripDuration = (destination.duration / 60).floorToDouble().toInt();
 
     // final startMarkerIcon = await getAssetImageMarker();
     final startMarkerIcon = await getStartCustomMarker(tripDuration, 'Mi ubicación');
+=======
+    double tripDuration = (destination.duration / 60).floorToDouble();
+
+    final startMarkerIcon = await getAssetImageMarker();
+>>>>>>> b03be46d617a1047d66e138aee66d804c81491c3
 
     final startMarker = Marker(
       markerId: const MarkerId('start'),
       position: destination.points.first,
       icon: startMarkerIcon,
+<<<<<<< HEAD
       anchor: const Offset(0.1, 1)
       // infoWindow: InfoWindow(
       //   title: 'Inicio',
@@ -116,15 +123,31 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     // final endMarkerIcon = await getNetworkImageMarker();
     final endMarkerIcon = await getEndCustomMarker(kms, destination.endPlace.text);
+=======
+      infoWindow: InfoWindow(
+        title: 'Inicio',
+        snippet: 'Kms: $kms Distancia: $tripDuration'
+      )
+    );
+
+    final endMarkerIcon = await getNetworkImageMarker();
+>>>>>>> b03be46d617a1047d66e138aee66d804c81491c3
 
     final endMarker = Marker(
       markerId: const MarkerId('end'),
       position: destination.points.last,
       icon: endMarkerIcon,
+<<<<<<< HEAD
       // infoWindow: InfoWindow(
       //   title: destination.endPlace.text,
       //   snippet: destination.endPlace.placeName
       // )
+=======
+      infoWindow: InfoWindow(
+        title: destination.endPlace.text,
+        snippet: destination.endPlace.placeName
+      )
+>>>>>>> b03be46d617a1047d66e138aee66d804c81491c3
     );
 
     final currentMarkers = Map<String, Marker>.from(state.markers);
@@ -133,8 +156,13 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     add( DisplayPolylinesEvent(currentPolylines, currentMarkers) );
 
+<<<<<<< HEAD
     // await Future.delayed(const Duration(milliseconds: 300));
     // _mapController?.showMarkerInfoWindow(const MarkerId('start'));
+=======
+    await Future.delayed(const Duration(milliseconds: 300));
+    _mapController?.showMarkerInfoWindow(const MarkerId('start'));
+>>>>>>> b03be46d617a1047d66e138aee66d804c81491c3
 
   } 
 
